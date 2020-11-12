@@ -59,10 +59,12 @@ namespace BP_FrederikVanRuyskensvelde
 
                 foreach (string file in filePathsList)
                 {
+                    long sizeBytes = new FileInfo(file).Length;
                     try
                     {
                         IClassification googleLabeler = new GoogleClassification();
                         ClassificationResult classResultGoogle = googleLabeler.GetResult(file, animalName, diffulty);
+                        classResultGoogle.FileSizeBytes = sizeBytes;
                         classResultsAll.Add(classResultGoogle);
                     }
                     catch (Exception e)
@@ -75,6 +77,7 @@ namespace BP_FrederikVanRuyskensvelde
                     {
                         IClassification awsLabeler = new AWSClassification();
                         ClassificationResult classResultAWS = awsLabeler.GetResult(file, animalName, diffulty);
+                        classResultAWS.FileSizeBytes = sizeBytes;
                         classResultsAll.Add(classResultAWS);
                     }
                     catch (Exception e)

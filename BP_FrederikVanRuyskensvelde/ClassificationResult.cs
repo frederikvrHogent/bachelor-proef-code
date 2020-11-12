@@ -16,5 +16,6 @@ namespace BP_FrederikVanRuyskensvelde
         public bool ClassificationSuccess { get; set; }
         public string Difficulty { get; set; }
         public string FileName { get; set; }
+        public long FileSizeBytes { get; set; }
     }
 }
