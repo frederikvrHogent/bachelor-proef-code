@@ -54,7 +54,7 @@ namespace BP_FrederikVanRuyskensvelde
 
                 foreach (var label in detectLabelsResponse.Result.Labels)
                 {
-                    if (label.Name != null && label.Confidence != 0)
+                    if (string.IsNullOrEmpty(label.Name) && label.Confidence != 0)
                     {
                         labels.Add(label.Name);
                         scores.Add(label.Confidence);

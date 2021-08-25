@@ -36,7 +36,7 @@ namespace BP_FrederikVanRuyskensvelde
 
             foreach (var label in results)
             {
-                if (label.Description != null && label.Score != 0)
+                if (string.IsNullOrEmpty(label.Description) && label.Score != 0)
                 {
                     labels.Add(label.Description);
                     scores.Add(label.Score * 100);

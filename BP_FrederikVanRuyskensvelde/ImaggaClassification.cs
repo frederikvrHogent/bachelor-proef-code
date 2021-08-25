@@ -23,6 +23,7 @@ namespace BP_FrederikVanRuyskensvelde
             uploadRequest.AddHeader("Authorization", String.Format("Basic {0}", basicAuthValue));
             uploadRequest.AddFile("image", inputImageLocation);
 
+            var startTime = DateTime.Now;
             IRestResponse uploadResponse = uploadClient.Execute(uploadRequest);
             ImaggaUploadResponse immagaUploadResponse = JsonConvert.DeserializeObject<ImaggaUploadResponse>(uploadResponse.Content);
 
@@ -46,11 +47,12 @@ namespace BP_FrederikVanRuyskensvelde
             labelRequest.AddParameter("image_upload_id", uploadid);
             labelRequest.AddParameter("limit", Constants.maxLabelsReturned);
             labelRequest.AddHeader("Authorization", String.Format("Basic {0}", basicAuthValue));
-            var startTime = DateTime.Now;
+
             IRestResponse labelResponse = labelClient.Execute(labelRequest);
             var endTime = DateTime.Now;
-
             ImaggaLabelResponse imaggaLabelResponse = JsonConvert.DeserializeObject<ImaggaLabelResponse>(labelResponse.Content);
+
+
             var labels = new List<string>();
             var scores = new List<float>();
 
@@ -58,7 +60,7 @@ namespace BP_FrederikVanRuyskensvelde
             {
                 foreach (var label in imaggaLabelResponse.result.tags)
                 {
-                    if (label.tag.en != null && label.confidence != 0)
+                    if (string.IsNullOrEmpty(label.tag.en) && label.confidence != 0)
                     {
                         labels.Add(label.tag.en);
                         scores.Add(label.confidence);
