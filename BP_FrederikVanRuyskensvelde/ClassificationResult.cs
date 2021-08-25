@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BP_FrederikVanRuyskensvelde
+﻿namespace BP_FrederikVanRuyskensvelde
 {
     public class ClassificationResult
     {
         public string Engine { get; set; }
         public string InputLabel { get; set; }
-        public List<string> ReturnedLabels { get; set; }
-        public List<float> ReturnedConfidences { get; set; }
-        public string RecognizedLabel { get; set; }
-        public float RecognizedConfidence { get; set; }
+        public string ReturnedLabel1 { get; set; }
+        public float ReturnedConfidence1 { get; set; }
+        public string ReturnedLabel2 { get; set; }
+        public float ReturnedConfidence2 { get; set; }
+        public string ReturnedLabel3 { get; set; }
+        public float ReturnedConfidence3 { get; set; }
         public double ProcessingTimeMilliseconds { get; set; }
-        public bool ClassificationSuccess { get; set; }
-        public string Difficulty { get; set; }
         public string FileName { get; set; }
         public long FileSizeBytes { get; set; }
     }

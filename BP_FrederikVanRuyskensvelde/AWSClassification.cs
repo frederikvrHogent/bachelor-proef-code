@@ -9,7 +9,7 @@ namespace BP_FrederikVanRuyskensvelde
 {
     public class AWSClassification : IClassification
     {
-        public ClassificationResult GetResult(string inputImageLocation, string animalName, string difficulty)
+        public ClassificationResult GetResult(string inputImageLocation, string pictureName)
         {
             Amazon.Rekognition.Model.Image image = new Amazon.Rekognition.Model.Image();
 
@@ -65,11 +65,15 @@ namespace BP_FrederikVanRuyskensvelde
                     }
                 }
 
-                classificationResult.InputLabel = animalName;
-                classificationResult.ReturnedLabels = labels;
-                classificationResult.ReturnedConfidences = scores;
+                classificationResult.ProcessingTimeMilliseconds = endTime.Subtract(startTime).TotalMilliseconds;
+                classificationResult.InputLabel = pictureName;
+                classificationResult.ReturnedLabel1 = labels[0];
+                classificationResult.ReturnedConfidence1 = scores[0];
+                classificationResult.ReturnedLabel2 = labels[1];
+                classificationResult.ReturnedConfidence2 = scores[1];
+                classificationResult.ReturnedLabel3 = labels[2];
+                classificationResult.ReturnedConfidence3 = scores[2];
                 classificationResult.FileName = inputImageLocation;
-                classificationResult.Difficulty = difficulty;
             }
             catch (Exception e)
             {

@@ -9,14 +9,14 @@ namespace BP_FrederikVanRuyskensvelde
 {
     public class GoogleClassification : IClassification
     {
-        public ClassificationResult GetResult(string inputImageLocation, string animalName, string difficulty)
+        public ClassificationResult GetResult(string inputImageLocation, string pictureName)
         {
             // Instantiates a client
             ImageAnnotatorClient client = ImageAnnotatorClient.Create();
             // Load the image file into memory
             Image image = Image.FromFile(inputImageLocation);
 
-            // Performs label detection on the image file
+            // Perform label detection on the image file
             var startTime = DateTime.Now;
 
             IReadOnlyList<EntityAnnotation> results;
@@ -50,14 +50,15 @@ namespace BP_FrederikVanRuyskensvelde
             var classificationResult = new ClassificationResult() { Engine = "Google" };
 
             classificationResult.ProcessingTimeMilliseconds = endTime.Subtract(startTime).TotalMilliseconds;
-            classificationResult.InputLabel = animalName;
-            classificationResult.ReturnedLabels = labels;
-            classificationResult.ReturnedConfidences = scores;
+            classificationResult.InputLabel = pictureName;
+            classificationResult.ReturnedLabel1 = labels[0];
+            classificationResult.ReturnedConfidence1 = scores[0];
+            classificationResult.ReturnedLabel2 = labels[1];
+            classificationResult.ReturnedConfidence2 = scores[1];
+            classificationResult.ReturnedLabel3 = labels[2];
+            classificationResult.ReturnedConfidence3 = scores[2];
             classificationResult.FileName = inputImageLocation;
-            classificationResult.Difficulty = difficulty;
-
             return classificationResult;
         }
-
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CsvHelper;
-using Google.Cloud.Vision.V1;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,16 +22,16 @@ namespace BP_FrederikVanRuyskensvelde
             //                           \dogImage2.jpg
 
             // Get all subdirectories
-            List<string> subdirectoriesList;
-            try
-            {
-                subdirectoriesList = Directory.GetDirectories(Constants.startPath).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error during get subdirectories");
-                throw e;
-            }
+            //List<string> subdirectoriesList;
+            //try
+            //{
+            //    subdirectoriesList = Directory.GetDirectories(Constants.startPath).ToList();
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine("Error during get subdirectories");
+            //    throw e;
+            //}
 
             Console.WriteLine("Successfully got images from folder.");
 
@@ -44,26 +42,29 @@ namespace BP_FrederikVanRuyskensvelde
 
             List<ClassificationResult> classResultsAll = new List<ClassificationResult>();
 
-            foreach (string subdirectory in subdirectoriesList)
+            //foreach (string subdirectory in subdirectoriesList)
+            //{
+            List<string> filePathsList = Directory.GetFiles(Constants.startPath).ToList();
+
+            //int pos = subdirectory.LastIndexOf(@"\") + 1;
+
+            //string animalNameWithDifficulty = subdirectory.Substring(pos, subdirectory.Length - pos);
+
+            //int posOfDash = animalNameWithDifficulty.LastIndexOf("-") + 1;
+
+            //string animalName = animalNameWithDifficulty.Substring(0, posOfDash - 1);
+            //string diffulty = animalNameWithDifficulty.Substring(posOfDash, animalNameWithDifficulty.Length - posOfDash);
+
+            foreach (string file in filePathsList)
             {
-                List<string> filePathsList = Directory.GetFiles(subdirectory).ToList();
-
-                int pos = subdirectory.LastIndexOf(@"\") + 1;
-
-                string animalNameWithDifficulty = subdirectory.Substring(pos, subdirectory.Length - pos);
-
-                int posOfDash = animalNameWithDifficulty.LastIndexOf("-") + 1;
-
-                string animalName = animalNameWithDifficulty.Substring(0, posOfDash - 1);
-                string diffulty = animalNameWithDifficulty.Substring(posOfDash, animalNameWithDifficulty.Length - posOfDash);
-
-                foreach (string file in filePathsList)
+                var filename = Path.GetFileName(file);
+                long sizeBytes = new FileInfo(file).Length;
+                if (true)
                 {
-                    long sizeBytes = new FileInfo(file).Length;
                     try
                     {
                         IClassification googleLabeler = new GoogleClassification();
-                        ClassificationResult classResultGoogle = googleLabeler.GetResult(file, animalName, diffulty);
+                        ClassificationResult classResultGoogle = googleLabeler.GetResult(file, filename);
                         classResultGoogle.FileSizeBytes = sizeBytes;
                         classResultsAll.Add(classResultGoogle);
                     }
@@ -72,11 +73,14 @@ namespace BP_FrederikVanRuyskensvelde
                         Console.WriteLine("Error during Google classification of image " + file);
                         throw e;
                     }
+                }
 
+                if (true)
+                {
                     try
                     {
                         IClassification awsLabeler = new AWSClassification();
-                        ClassificationResult classResultAWS = awsLabeler.GetResult(file, animalName, diffulty);
+                        ClassificationResult classResultAWS = awsLabeler.GetResult(file, filename);
                         classResultAWS.FileSizeBytes = sizeBytes;
                         classResultsAll.Add(classResultAWS);
                     }
@@ -86,46 +90,61 @@ namespace BP_FrederikVanRuyskensvelde
                         throw e;
                     }
                 }
+
+
+                try
+                {
+                    IClassification imaggalabeler = new ImaggaClassification();
+                    ClassificationResult classResultimaga = imaggalabeler.GetResult(file, filename);
+                    classResultimaga.FileSizeBytes = sizeBytes;
+                    classResultsAll.Add(classResultimaga);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error during imagga classification of image " + file);
+                    throw e;
+                }
             }
+            //}
 
             Console.WriteLine("Successfully classified images.");
 
             /*
              * Check if any of the recognized labels is correct
             */
-            Console.WriteLine("Check if image classification has found correct labels.");
+            //Console.WriteLine("Check if image classification has found correct labels.");
             // Loop through all results
-            foreach (var result in classResultsAll)
-            {
-                // Loop through all labels for result
-                foreach (var label in result.ReturnedLabels)
-                {
-                    // If label == inputlabel
-                    if (label.Equals(result.InputLabel, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Get index of label
-                        int index = result.ReturnedLabels.IndexOf(label);
+            //foreach (var result in classResultsAll)
+            //{
+            //    // Loop through all labels for result
+            //    foreach (var label in result.ReturnedLabels)
+            //    {
+            //        // If label == inputlabel
+            //        if (label.Equals(result.InputLabel, StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            // Get index of label
+            //            int index = result.ReturnedLabels.IndexOf(label);
 
-                        // Set label and confidence level of that label to result
-                        result.RecognizedLabel = label;
-                        result.RecognizedConfidence = result.ReturnedConfidences[index];
-                        result.ClassificationSuccess = true;
+            //            // Set label and confidence level of that label to result
+            //            result.RecognizedLabel = label;
+            //            result.RecognizedConfidence = result.ReturnedConfidences[index];
+            //            result.ClassificationSuccess = true;
 
-                        // Stop searching
-                        break;
-                    }
-                }
+            //            // Stop searching
+            //            break;
+            //        }
+            //    }
 
-                // No correct label found
-                if (result.RecognizedLabel == null)
-                {
-                    result.RecognizedLabel = result.ReturnedLabels.First();
-                    result.RecognizedConfidence = result.ReturnedConfidences.First();
-                    result.ClassificationSuccess = false;
-                }
+            //    // No correct label found
+            //    if (result.RecognizedLabel == null)
+            //    {
+            //        result.RecognizedLabel = result.ReturnedLabels.First();
+            //        result.RecognizedConfidence = result.ReturnedConfidences.First();
+            //        result.ClassificationSuccess = false;
+            //    }
 
-            }
-            Console.WriteLine("Successfully checked if image classification has found correct labels.");
+            //}
+            //Console.WriteLine("Successfully checked if image classification has found correct labels.");
 
             Console.WriteLine("Start write to CSV.");
 

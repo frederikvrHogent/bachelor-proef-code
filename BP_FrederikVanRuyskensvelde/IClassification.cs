@@ -6,6 +6,6 @@ namespace BP_FrederikVanRuyskensvelde
 {
     public interface IClassification
     {
-        ClassificationResult GetResult(string inputImageLocation, string animalName, string difficulty);
+        ClassificationResult GetResult(string inputImageLocation, string pictureName);
     }
 }
