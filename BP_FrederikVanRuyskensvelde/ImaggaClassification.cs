@@ -60,7 +60,7 @@ namespace BP_FrederikVanRuyskensvelde
             {
                 foreach (var label in imaggaLabelResponse.result.tags)
                 {
-                    if (string.IsNullOrEmpty(label.tag.en) && label.confidence != 0)
+                    if (!string.IsNullOrEmpty(label.tag.en) && label.confidence != 0)
                     {
                         labels.Add(label.tag.en);
                         scores.Add(label.confidence);
@@ -77,7 +77,7 @@ namespace BP_FrederikVanRuyskensvelde
             }
             #endregion LABEL
 
-            var classificationResult = new ClassificationResult() { Engine = "imagga" };
+            var classificationResult = new ClassificationResult() { APIName = "imagga" };
 
             classificationResult.ProcessingTimeMilliseconds = endTime.Subtract(startTime).TotalMilliseconds;
             classificationResult.InputLabel = pictureName;
@@ -87,7 +87,7 @@ namespace BP_FrederikVanRuyskensvelde
             classificationResult.ReturnedConfidence2 = scores[1];
             classificationResult.ReturnedLabel3 = labels[2];
             classificationResult.ReturnedConfidence3 = scores[2];
-            classificationResult.FileName = inputImageLocation;
+            classificationResult.FilePath = inputImageLocation;
             return classificationResult;
         }
     }

@@ -39,7 +39,7 @@ namespace BP_FrederikVanRuyskensvelde
                 MaxLabels = Constants.maxLabelsReturned,
             };
 
-            ClassificationResult classificationResult = new ClassificationResult() { Engine = "AWS" };
+            ClassificationResult classificationResult = new ClassificationResult() { APIName = "AWS" };
             try
             {
                 var startTime = DateTime.Now;
@@ -47,14 +47,12 @@ namespace BP_FrederikVanRuyskensvelde
                 detectLabelsResponse.Wait();
                 var endTime = DateTime.Now;
 
-                classificationResult.ProcessingTimeMilliseconds = endTime.Subtract(startTime).TotalMilliseconds;
-
                 var labels = new List<string>();
                 var scores = new List<float>();
 
                 foreach (var label in detectLabelsResponse.Result.Labels)
                 {
-                    if (string.IsNullOrEmpty(label.Name) && label.Confidence != 0)
+                    if (!string.IsNullOrEmpty(label.Name) && label.Confidence != 0)
                     {
                         labels.Add(label.Name);
                         scores.Add(label.Confidence);
@@ -73,7 +71,7 @@ namespace BP_FrederikVanRuyskensvelde
                 classificationResult.ReturnedConfidence2 = scores[1];
                 classificationResult.ReturnedLabel3 = labels[2];
                 classificationResult.ReturnedConfidence3 = scores[2];
-                classificationResult.FileName = inputImageLocation;
+                classificationResult.FilePath = inputImageLocation;
             }
             catch (Exception e)
             {

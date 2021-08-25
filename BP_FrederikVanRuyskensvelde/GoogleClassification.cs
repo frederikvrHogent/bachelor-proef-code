@@ -11,15 +11,10 @@ namespace BP_FrederikVanRuyskensvelde
     {
         public ClassificationResult GetResult(string inputImageLocation, string pictureName)
         {
-            // Instantiates a client
             ImageAnnotatorClient client = ImageAnnotatorClient.Create();
-            // Load the image file into memory
             Image image = Image.FromFile(inputImageLocation);
-
-            // Perform label detection on the image file
-            var startTime = DateTime.Now;
-
             IReadOnlyList<EntityAnnotation> results;
+            var startTime = DateTime.Now;
             try
             {
                 results = client.DetectLabels(image, null, Constants.maxLabelsReturned);
@@ -36,7 +31,7 @@ namespace BP_FrederikVanRuyskensvelde
 
             foreach (var label in results)
             {
-                if (string.IsNullOrEmpty(label.Description) && label.Score != 0)
+                if (!string.IsNullOrEmpty(label.Description) && label.Score != 0)
                 {
                     labels.Add(label.Description);
                     scores.Add(label.Score * 100);
@@ -47,7 +42,7 @@ namespace BP_FrederikVanRuyskensvelde
                 }
             }
 
-            var classificationResult = new ClassificationResult() { Engine = "Google" };
+            var classificationResult = new ClassificationResult() { APIName = "Google" };
 
             classificationResult.ProcessingTimeMilliseconds = endTime.Subtract(startTime).TotalMilliseconds;
             classificationResult.InputLabel = pictureName;
@@ -57,7 +52,7 @@ namespace BP_FrederikVanRuyskensvelde
             classificationResult.ReturnedConfidence2 = scores[1];
             classificationResult.ReturnedLabel3 = labels[2];
             classificationResult.ReturnedConfidence3 = scores[2];
-            classificationResult.FileName = inputImageLocation;
+            classificationResult.FilePath = inputImageLocation;
             return classificationResult;
         }
     }
