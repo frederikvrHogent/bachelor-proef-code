@@ -11,50 +11,17 @@ namespace BP_FrederikVanRuyskensvelde
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Start get images from folder " + Constants.startPath);
-
-            // Location main folder where images to be classified should live
-            // Folder structure should be
-            //  {startPath}\{imageLabel1}\image1.jpg
-            //                           \image2.jpg
-            //                           \image3.jpg
-            //             \Dog          \dogImage1.jpg
-            //                           \dogImage2.jpg
-
-            // Get all subdirectories
-            //List<string> subdirectoriesList;
-            //try
-            //{
-            //    subdirectoriesList = Directory.GetDirectories(Constants.startPath).ToList();
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine("Error during get subdirectories");
-            //    throw e;
-            //}
-
-            Console.WriteLine("Successfully got images from folder.");
+            Console.WriteLine("Get images from folder " + Constants.startPath);
 
             /*
-             * Get all items from each subdirectory and send to Google Vision and AWS Rekognition
+             * Get all items from each subdirectory and send to computer vision API's
             */
             Console.WriteLine("Start image classification.");
 
             List<ClassificationResult> classResultsAll = new List<ClassificationResult>();
 
-            //foreach (string subdirectory in subdirectoriesList)
-            //{
             List<string> filePathsList = Directory.GetFiles(Constants.startPath).ToList();
-
-            //int pos = subdirectory.LastIndexOf(@"\") + 1;
-
-            //string animalNameWithDifficulty = subdirectory.Substring(pos, subdirectory.Length - pos);
-
-            //int posOfDash = animalNameWithDifficulty.LastIndexOf("-") + 1;
-
-            //string animalName = animalNameWithDifficulty.Substring(0, posOfDash - 1);
-            //string diffulty = animalNameWithDifficulty.Substring(posOfDash, animalNameWithDifficulty.Length - posOfDash);
-
+            Console.WriteLine(filePathsList.Count + " images found.");
             foreach (string file in filePathsList)
             {
                 var filename = Path.GetFileName(file);
@@ -91,7 +58,6 @@ namespace BP_FrederikVanRuyskensvelde
                     }
                 }
 
-
                 try
                 {
                     IClassification imaggalabeler = new ImaggaClassification();
@@ -105,47 +71,8 @@ namespace BP_FrederikVanRuyskensvelde
                     throw e;
                 }
             }
-            //}
 
             Console.WriteLine("Successfully classified images.");
-
-            /*
-             * Check if any of the recognized labels is correct
-            */
-            //Console.WriteLine("Check if image classification has found correct labels.");
-            // Loop through all results
-            //foreach (var result in classResultsAll)
-            //{
-            //    // Loop through all labels for result
-            //    foreach (var label in result.ReturnedLabels)
-            //    {
-            //        // If label == inputlabel
-            //        if (label.Equals(result.InputLabel, StringComparison.InvariantCultureIgnoreCase))
-            //        {
-            //            // Get index of label
-            //            int index = result.ReturnedLabels.IndexOf(label);
-
-            //            // Set label and confidence level of that label to result
-            //            result.RecognizedLabel = label;
-            //            result.RecognizedConfidence = result.ReturnedConfidences[index];
-            //            result.ClassificationSuccess = true;
-
-            //            // Stop searching
-            //            break;
-            //        }
-            //    }
-
-            //    // No correct label found
-            //    if (result.RecognizedLabel == null)
-            //    {
-            //        result.RecognizedLabel = result.ReturnedLabels.First();
-            //        result.RecognizedConfidence = result.ReturnedConfidences.First();
-            //        result.ClassificationSuccess = false;
-            //    }
-
-            //}
-            //Console.WriteLine("Successfully checked if image classification has found correct labels.");
-
             Console.WriteLine("Start write to CSV.");
 
             try
@@ -162,6 +89,7 @@ namespace BP_FrederikVanRuyskensvelde
                 Console.WriteLine("Error during write to CSV.");
                 throw e;
             }
+
             Console.WriteLine("End write to CSV.");
 
             Console.WriteLine("Program executed successfully.");

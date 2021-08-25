@@ -69,6 +69,10 @@ namespace BP_FrederikVanRuyskensvelde
                     }
                 }
             }
+            else
+            {
+                throw new Exception("Exception during imagga processing of image, no success returned: " + inputImageLocation);
+            }
             #endregion LABEL
 
             var classificationResult = new ClassificationResult() { Engine = "imagga" };
