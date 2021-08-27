@@ -10,8 +10,8 @@ namespace BP_FrederikVanRuyskensvelde
         public ClassificationResult GetResult(string inputImageLocation, string pictureName)
         {
             #region SETUP
-            string apiKey = "acc_da03467c474363d";
-            string apiSecret = "99f585752f2dd5b3f69cf74f4d1b40ef";
+            string apiKey = "***";
+            string apiSecret = "***";
             string basicAuthValue = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(String.Format("{0}:{1}", apiKey, apiSecret)));
             #endregion SETUP
 
